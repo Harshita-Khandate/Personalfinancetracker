@@ -59,25 +59,25 @@ namespace PersonalFinanceTracker.Controllers
                 ViewBag.Error = "Invalid Email and Password";
                 return View();
             }
-            HttpContext.Session.SetString("Name", check.Name);
-            HttpContext.Session.SetInt32("UserID", check.UserID);
+           // HttpContext.Session.SetString("Name", check.Name);
+           // HttpContext.Session.SetInt32("UserID", check.UserID);
             return RedirectToAction("Dashboard");
         }
 
         public IActionResult Dashboard()
         {
-            if (HttpContext.Session.GetString("Name") == null)
-            {
-                return RedirectToAction("Signin");
-            }
+            //if (HttpContext.Session.GetString("Name") == null)
+            //{
+            //    return RedirectToAction("Signin");
+            //}
 
-            ViewBag.Name = HttpContext.Session.GetString("Name");
+            //ViewBag.Name = HttpContext.Session.GetString("Name");
             return View();
         }
 
         public IActionResult Logout()
         {
-            HttpContext.Session.Clear();
+            //HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }
 
