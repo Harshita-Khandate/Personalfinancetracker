@@ -1,0 +1,35 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model PersonalFinanceTracker.Models.Users
+
+<h2>Login here</h2>
+<br />
+<br />
+<br />
+
+@using (Html.BeginForm())
+{
+
+    @Html.LabelFor(m => m.Email)
+    @Html.TextBoxFor(m => m.Email)
+    <br />
+    <br />
+
+    @Html.LabelFor(m => m.Password)
+    @Html.TextBoxFor(m => m.Password)
+    <br />
+    <br />
+    <input type="submit" value="Login"/>
+    
+    <h4>New user ?</h4>
+
+    <a href="Signup">Ragister here</a>
+}
+
+
+
+
+
+
+
