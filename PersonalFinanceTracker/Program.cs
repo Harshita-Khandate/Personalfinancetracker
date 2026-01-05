@@ -1,3 +1,6 @@
+﻿using Microsoft.EntityFrameworkCore;
+using PersonalFinanceTracker.DataBase;
+
 namespace PersonalFinanceTracker
 {
     public class Program
@@ -8,6 +11,21 @@ namespace PersonalFinanceTracker
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            // Add services to the container.
+            builder.Services.AddControllersWithViews();
+
+            // Database
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // ✅ Session services
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
             var app = builder.Build();
 
