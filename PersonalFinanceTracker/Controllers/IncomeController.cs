@@ -8,7 +8,6 @@ namespace PersonalFinanceTracker.Controllers
     public class IncomeController : Controller
     {
         private readonly AppDbContext _context;//new
-
         public IncomeController(AppDbContext context)//new
         {
             _context = context;
