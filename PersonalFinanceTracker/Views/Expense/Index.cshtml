@@ -1,0 +1,37 @@
+﻿@model PersonalFinanceTracker.Models.Expense
+
+@using (Html.BeginForm())
+{
+    @Html.LabelFor(m => m.ExpenseDate)
+    @Html.TextBoxFor(
+    m => m.ExpenseDate,
+        "{0:yyyy-MM-ddTHH:mm}",
+        new { type = "datetime-local", @class = "form-control" }
+    )
+@Html.ValidationMessageFor(m => m.ExpenseDate, "", new { style = "color:red" })
+<br />
+<br />
+
+@Html.LabelFor(m => m.Amount)
+@Html.TextBoxFor(m => m.Amount, new { @class = "form-control" })
+@Html.ValidationMessageFor(m => m.Amount, "", new { style = "color:red" })
+<br />
+<br />
+
+@Html.LabelFor(m => m.Note)
+@Html.TextBoxFor(m => m.Note, new { @class = "form-control" })
+<br />
+<br />
+
+@Html.LabelFor(m => m.ExpenseCategoryID)
+@Html.DropDownListFor(
+        m => m.ExpenseCategoryID,
+        ViewBag.catlist as SelectList,
+        "--Select Category--",
+        new { @class = "form-control" }
+    )
+<br />
+<br />
+
+<input type="submit" value="Add Expense" class="btn btn-primary" />
+}
