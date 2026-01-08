@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using PersonalFinanceTracker.DataBase;
 using PersonalFinanceTracker.Models;
 
@@ -13,8 +14,6 @@ namespace PersonalFinanceTracker.Controllers
         {
             _context = context;
         }
-
-        // 🔁 COMMON METHOD
         private void LoadCategories()
         {
             ViewBag.catlist = new SelectList(
@@ -33,7 +32,7 @@ namespace PersonalFinanceTracker.Controllers
             }
 
             LoadCategories();
-            return View(new Expense()); // ✅ IMPORTANT
+            return View(new Expense());
         }
 
         [HttpPost]
@@ -47,7 +46,7 @@ namespace PersonalFinanceTracker.Controllers
 
             if (!ModelState.IsValid)
             {
-                LoadCategories();   // ✅ MUST
+                LoadCategories();  
                 return View(e);
             }
 
@@ -58,6 +57,21 @@ namespace PersonalFinanceTracker.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+        public IActionResult List()
+        {
+            int? userId = HttpContext.Session.GetInt32("UserID");
+            if (userId == null)
+            {
+                return RedirectToAction("Signin", "Home");
+            }
+
+            var expenseList = _context.Expense
+                .Include(i => i.ExpenseCategory)   // join category
+                .Where(i => i.UserID == userId)
+                .ToList();
+
+            return View(expenseList);
         }
     }
 }

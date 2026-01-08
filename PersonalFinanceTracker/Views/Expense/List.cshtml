@@ -1,0 +1,27 @@
+﻿@model List<PersonalFinanceTracker.Models.Expense>
+
+<h2>My Expense</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Note</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ExpenseDate.ToShortDateString()</td>
+                <td>@item.ExpenseCategory.CategoryName</td>
+                <td>@item.Amount</td>
+                <td>@item.Note</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+

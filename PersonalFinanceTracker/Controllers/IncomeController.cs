@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using PersonalFinanceTracker.DataBase;
 using PersonalFinanceTracker.Models;
 
@@ -30,7 +31,7 @@ namespace PersonalFinanceTracker.Controllers
         [HttpPost]
         public IActionResult Index(Income income)
         {
-            // Session check again (VERY IMPORTANT)
+            // Session check again
             int? userId = HttpContext.Session.GetInt32("UserID");
             if (userId == null)
             {
@@ -46,8 +47,6 @@ namespace PersonalFinanceTracker.Controllers
                 );
                 return View(income);
             }
-
-            // ✅ Attach logged-in user
             income.UserID = userId.Value;
            // income.IncomeDate = DateTime.Now;
 
@@ -55,6 +54,21 @@ namespace PersonalFinanceTracker.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+        public IActionResult List()
+        {
+            int? userId = HttpContext.Session.GetInt32("UserID");
+            if (userId == null)
+            {
+                return RedirectToAction("Signin", "Home");
+            }
+
+            var incomeList = _context.Income
+                .Include(i => i.IncomeCategory)   // join category
+                .Where(i => i.UserID == userId)
+                .ToList();
+
+            return View(incomeList);
         }
 
     }

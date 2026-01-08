@@ -16,5 +16,6 @@ namespace PersonalFinanceTracker.Models
         public DateTime ExpenseDate { get; set; }
 
         public string Note { get; set; }
+        public IncomeCategory ExpenseCategory { get; set; }
     }
 }
