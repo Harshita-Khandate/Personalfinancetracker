@@ -1,0 +1,35 @@
+﻿@model PersonalFinanceTracker.Models.Income
+
+@using (Html.BeginForm())
+{
+    @Html.LabelFor(m => m.IncomeDate)
+    @Html.TextBoxFor(m => m.IncomeDate, new {@type="datetime-local",@class="from-control" ,@value=DateTime.Now.ToString("yyyy-MM-ddTHH:mm")})
+    @Html.ValidationMessageFor(m => m.IncomeDate, "", new { style = "color:red" })
+    <br />
+    <br />
+
+
+    @Html.LabelFor(m => m.Amount)
+    @Html.TextBoxFor(m => m.Amount)
+    @Html.ValidationMessageFor(m => m.Amount, "", new { style = "color:red" })
+    <br />
+    <br />
+
+    @Html.LabelFor(m => m.Note)
+    @Html.TextBoxFor(m => m.Note)
+    <br />
+    <br />
+
+    @Html.LabelFor(m => m.IncomeCategoryID)
+    @Html.DropDownListFor(
+    m => m.IncomeCategoryID,
+        ViewBag.catlist as SelectList,
+        "--Select Category--",
+        new { @class = "form-control" }
+    )
+//@Html.ValidationMessageFor(m => m.IncomeCategoryID, "", new { style = "color:red" })
+<br />
+<br />
+
+<input type="submit" value="Add Income" />
+}
