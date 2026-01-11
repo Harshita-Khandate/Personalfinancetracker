@@ -10,5 +10,9 @@ namespace PersonalFinanceTracker.DataBase
         }
 
         public DbSet<Users> Users {  get; set; }
+        public DbSet<Income> Income {  get; set; }
+        public DbSet<Expense> Expense { get; set; }
+        public DbSet<IncomeCategory> IncomeCategory { get; set; }
+        public DbSet<ExpenseCategory> ExpenseCategory { get; set; }
     }
 }

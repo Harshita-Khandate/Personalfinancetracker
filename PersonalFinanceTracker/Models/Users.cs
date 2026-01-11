@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace PersonalFinanceTracker.Models
 {
@@ -7,8 +8,9 @@ namespace PersonalFinanceTracker.Models
         [Key]
         public int UserID { get; set; }
 
-
+        [DisplayName("Enter your Name")]
         [Required(ErrorMessage ="Name is Empty")]
+
         public string Name { get; set; }
 
 
