@@ -27,7 +27,6 @@ namespace PersonalFinanceTracker.Controllers
         {
             return View();
         }
-
         [HttpPost]
         public IActionResult Signup(Users u)
         {

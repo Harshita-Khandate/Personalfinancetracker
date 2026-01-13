@@ -1,35 +1,61 @@
 ﻿@model PersonalFinanceTracker.Models.Income
 
-@using (Html.BeginForm())
+@using(Html.BeginForm())
 {
     @Html.LabelFor(m => m.IncomeDate)
-    @Html.TextBoxFor(m => m.IncomeDate, new {@type="datetime-local",@class="from-control" ,@value=DateTime.Now.ToString("yyyy-MM-ddTHH:mm")})
-    @Html.ValidationMessageFor(m => m.IncomeDate, "", new { style = "color:red" })
-    <br />
-    <br />
+    @Html.TextBoxFor(
+    m => m.IncomeDate,
+        "{0:yyyy-MM-ddTHH:mm}",
+        new { type = "datetime-local", @class = "form-control" }
+    )
+@Html.ValidationMessageFor(m => m.IncomeDate, "", new { style = "color:red" })
+<br />
+<br />
 
+@Html.LabelFor(m => m.Amount)
+@Html.TextBoxFor(m => m.Amount, new { @class = "form-control" })
+@Html.ValidationMessageFor(m => m.Amount, "", new { style = "color:red" })
+<br />
+<br />
 
-    @Html.LabelFor(m => m.Amount)
-    @Html.TextBoxFor(m => m.Amount)
-    @Html.ValidationMessageFor(m => m.Amount, "", new { style = "color:red" })
-    <br />
-    <br />
+@Html.LabelFor(m => m.Note)
+@Html.TextBoxFor(m => m.Note, new { @class = "form-control" })
+<br />
+<br />
 
-    @Html.LabelFor(m => m.Note)
-    @Html.TextBoxFor(m => m.Note)
-    <br />
-    <br />
-
-    @Html.LabelFor(m => m.IncomeCategoryID)
-    @Html.DropDownListFor(
-    m => m.IncomeCategoryID,
+@Html.LabelFor(m => m.IncomeCategoryID)
+@Html.DropDownListFor(
+        m => m.IncomeCategoryID,
         ViewBag.catlist as SelectList,
         "--Select Category--",
         new { @class = "form-control" }
     )
-//@Html.ValidationMessageFor(m => m.IncomeCategoryID, "", new { style = "color:red" })
 <br />
 <br />
 
-<input type="submit" value="Add Income" />
+<h3>Income List</h3>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Amount</th>
+        <th>Date</th>
+        <th>Category</th>
+        <th>Note</th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var item in ViewBag.incomeList)
+    {
+        <tr>
+            <td>@item.Amount</td>
+            <td>@item.IncomeDate.ToShortDateString()</td>
+            <td>@item.IncomeCategory.CategoryName</td>
+            <td>@item.Note</td>
+            <td>
+                <a asp-action="Index" asp-route-id="@item.IncomeID" class="btn btn-warning btn-sm">Edit</a>
+                <a asp-action="Delete" asp-route-id="@item.IncomeID" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+    }
+</table>
 }

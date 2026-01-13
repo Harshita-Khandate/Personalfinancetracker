@@ -2,12 +2,15 @@
 
 @using (Html.BeginForm())
 {
+    @Html.AntiForgeryToken()
     @Html.LabelFor(m => m.ExpenseDate)
-    @Html.TextBoxFor(
+    @* @Html.TextBoxFor(
     m => m.ExpenseDate,
         "{0:yyyy-MM-ddTHH:mm}",
         new { type = "datetime-local", @class = "form-control" }
-    )
+    ) *@
+    @Html.TextBoxFor(m => m.ExpenseDate, new { @class = "form-control" })
+
 @Html.ValidationMessageFor(m => m.ExpenseDate, "", new { style = "color:red" })
 <br />
 <br />
@@ -24,14 +27,42 @@
 <br />
 
 @Html.LabelFor(m => m.ExpenseCategoryID)
-@Html.DropDownListFor(
+@Html.TextBoxFor(m => m.ExpenseCategoryID, new { @class = "form-control" })
+
+@* @Html.DropDownListFor(
         m => m.ExpenseCategoryID,
         ViewBag.catlist as SelectList,
         "--Select Category--",
         new { @class = "form-control" }
-    )
+    ) *@
 <br />
 <br />
 
 <input type="submit" value="Add Expense" class="btn btn-primary" />
+
+@* <h3>Expence List</h3>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Amount</th>
+        <th>Date</th>
+        <th>Category</th>
+        <th>Note</th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var item in ViewBag.expenseList)
+        {
+            <tr>
+                <td>@item.Amount</td>
+                <td>@item.ExpenseDate.ToShortDateString()</td>
+                <td>@item.ExpenseCategory.CategoryName</td>
+                <td>@item.Note</td>
+                <td>
+                    <a asp-action="Index" asp-route-id="@item.ExpenseID" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.ExpenseID" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </table> *@
 }

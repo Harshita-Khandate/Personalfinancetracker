@@ -7,15 +7,21 @@ namespace PersonalFinanceTracker.Models
     {
         [Key]
         public int IncomeID { get; set; }
-        [Required]
-        public int UserID { get; set; }
-        [Required(ErrorMessage ="Empty Filed")]
-        public int IncomeCategoryID { get; set; }
-        [Required(ErrorMessage = "Empty Filed")]
-        public Decimal Amount { get; set; }
-        [Required]
-        public DateTime IncomeDate {  get; set; }
 
-        public  string Note {  get; set; }
+        [Required]
+        public decimal Amount { get; set; }
+
+        [Required]
+        public DateTime IncomeDate { get; set; }
+
+        [Required]
+        public int IncomeCategoryID { get; set; }
+        public string Note { get; set; }
+
+        // ❌ DO NOT mark Required
+        public int UserID { get; set; }
+
+        [ForeignKey("IncomeCategoryID")]
+        public IncomeCategory IncomeCategory { get; set; }
     }
 }
