@@ -1,0 +1,25 @@
+﻿@model PersonalFinanceTracker.Models.Income
+
+<h2>Edit Income</h2>
+
+<form asp-action="Edit" method="post">
+
+    <input type="hidden" asp-for="IncomeID" />
+
+    <label>Category</label>
+    <select asp-for="IncomeCategoryID"
+            asp-items="ViewBag.CategoryList"
+            class="form-control"></select>
+
+    <label>Amount</label>
+    <input asp-for="Amount" class="form-control" />
+
+    <label>Date</label>
+    <input asp-for="IncomeDate" type="date" class="form-control" />
+
+    <label>Note</label>
+    <input asp-for="Note" class="form-control" />
+
+    <br />
+    <button type="submit" class="btn btn-success">Update</button>
+</form>

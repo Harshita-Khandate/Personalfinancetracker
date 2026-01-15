@@ -14,92 +14,102 @@ namespace PersonalFinanceTracker.Controllers
         {
             _context = context;
         }
+        // READ  
+        public IActionResult Index()
+        {
+            var data = _context.Incomes
+                .Include(i => i.IncomeCategory)
+                .ToList();
 
-        // ================================
-        // SHOW + EDIT
-        // ================================
-        public IActionResult Index(int? id)
+            return View(data);
+        }
+
+        // CREATE - GET
+        public IActionResult Create()
+        {
+            LoadCategories();
+            return View();
+        }
+        //create
+        [HttpPost]
+        public IActionResult Create(Income income)
         {
             int? userId = HttpContext.Session.GetInt32("UserID");
+
             if (userId == null)
                 return RedirectToAction("Signin", "Home");
 
-            // Dropdown
-            ViewBag.catlist = new SelectList(
-                _context.IncomeCategory.ToList(),
-                "IncomeCategoryID",
-                "CategoryName"
-            );
-
-            // Edit mode
-            Income income = new Income();
-            if (id != null)
+            income.UserID = userId.Value;
+            if (income.IncomeDate <= new DateTime(1753, 1, 1))
             {
-                income = _context.Income.Find(id);
+                income.IncomeDate = DateTime.Now;
             }
 
-            // List
-            ViewBag.incomeList = _context.Income
-                .Include(x => x.IncomeCategory)
-                .Where(x => x.UserID == userId)
-                .ToList();
+            _context.Incomes.Add(income);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+        // EDIT - GET
+        public IActionResult Edit(int id)
+        {
+            var income = _context.Incomes.Find(id);
+            if (income == null)
+                return NotFound();
+
+            ViewBag.CategoryList = new SelectList(
+                _context.IncomeCategories,
+                "IncomeCategoryID",
+                "CategoryName",
+                income.IncomeCategoryID
+            );
 
             return View(income);
         }
-
-        // ================================
-        // INSERT + UPDATE
-        // ================================
+        //edit- post
         [HttpPost]
-        public IActionResult Index(Income income)
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public IActionResult Edit(Income income)
         {
             int? userId = HttpContext.Session.GetInt32("UserID");
+
             if (userId == null)
                 return RedirectToAction("Signin", "Home");
 
-            // Assign session value BEFORE validation
             income.UserID = userId.Value;
 
-            if (!ModelState.IsValid)
+            // 🔐 Date safety
+            if (income.IncomeDate <= new DateTime(1753, 1, 1))
             {
-                ViewBag.catlist = new SelectList(
-                    _context.IncomeCategory.ToList(),
-                    "IncomeCategoryID",
-                    "CategoryName"
-                );
-
-                ViewBag.incomeList = _context.Income
-                    .Include(x => x.IncomeCategory)
-                    .Where(x => x.UserID == userId)
-                    .ToList();
-
-                return View(income);
+                income.IncomeDate = DateTime.Now;
             }
 
-            if (income.IncomeID == 0)
-                _context.Income.Add(income);
-            else
-                _context.Income.Update(income);
-            Console.WriteLine(income.Amount);
-            Console.WriteLine(income.UserID);
-            Console.WriteLine(income.IncomeCategoryID);
-
+            _context.Incomes.Update(income);
             _context.SaveChanges();
+
             return RedirectToAction("Index");
         }
-
-        // ================================
-        // DELETE
-        // ================================
+        //delete
         public IActionResult Delete(int id)
         {
-            var income = _context.Income.Find(id);
-            if (income != null)
-            {
-                _context.Income.Remove(income);
-                _context.SaveChanges();
-            }
-            return RedirectToAction("Index");
+            var income = _context.Incomes.Find(id);
+            if (income == null)
+                return NotFound();
+
+            _context.Incomes.Remove(income);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Index));
+        }
+        // COMMON METHOD
+        private void LoadCategories(int? selectedId = null)
+        {
+            ViewBag.CategoryList = new SelectList(
+                _context.IncomeCategories,
+                "IncomeCategoryID",
+                "CategoryName",
+                selectedId
+            );
         }
     }
 }

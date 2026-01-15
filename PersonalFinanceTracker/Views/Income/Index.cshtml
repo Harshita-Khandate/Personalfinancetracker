@@ -1,61 +1,29 @@
-﻿@model PersonalFinanceTracker.Models.Income
+﻿@model IEnumerable<PersonalFinanceTracker.Models.Income>
 
-@using(Html.BeginForm())
-{
-    @Html.LabelFor(m => m.IncomeDate)
-    @Html.TextBoxFor(
-    m => m.IncomeDate,
-        "{0:yyyy-MM-ddTHH:mm}",
-        new { type = "datetime-local", @class = "form-control" }
-    )
-@Html.ValidationMessageFor(m => m.IncomeDate, "", new { style = "color:red" })
-<br />
-<br />
+<h2>Income List</h2>
 
-@Html.LabelFor(m => m.Amount)
-@Html.TextBoxFor(m => m.Amount, new { @class = "form-control" })
-@Html.ValidationMessageFor(m => m.Amount, "", new { style = "color:red" })
-<br />
-<br />
+<a asp-action="Create" class="btn btn-success">Add Income</a>
 
-@Html.LabelFor(m => m.Note)
-@Html.TextBoxFor(m => m.Note, new { @class = "form-control" })
-<br />
-<br />
-
-@Html.LabelFor(m => m.IncomeCategoryID)
-@Html.DropDownListFor(
-        m => m.IncomeCategoryID,
-        ViewBag.catlist as SelectList,
-        "--Select Category--",
-        new { @class = "form-control" }
-    )
-<br />
-<br />
-
-<h3>Income List</h3>
-
-<table class="table table-bordered">
+<table class="table table-bordered mt-3">
     <tr>
+        <th>Category</th>
         <th>Amount</th>
         <th>Date</th>
-        <th>Category</th>
         <th>Note</th>
         <th>Action</th>
     </tr>
 
-    @foreach (var item in ViewBag.incomeList)
+    @foreach (var item in Model)
     {
         <tr>
+            <td>@item.IncomeCategory.CategoryName</td>
             <td>@item.Amount</td>
             <td>@item.IncomeDate.ToShortDateString()</td>
-            <td>@item.IncomeCategory.CategoryName</td>
             <td>@item.Note</td>
             <td>
-                <a asp-action="Index" asp-route-id="@item.IncomeID" class="btn btn-warning btn-sm">Edit</a>
-                <a asp-action="Delete" asp-route-id="@item.IncomeID" class="btn btn-danger btn-sm">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.IncomeID" class="btn btn-warning">Edit</a>
+                <a asp-action="Delete" asp-route-id="@item.IncomeID" class="btn btn-danger">Delete</a>
             </td>
         </tr>
     }
 </table>
-}

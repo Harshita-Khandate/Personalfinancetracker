@@ -14,115 +14,102 @@ namespace PersonalFinanceTracker.Controllers
         {
             _context = context;
         }
-
-        // 🔁 COMMON METHOD
-        private void LoadCategories()
-        {
-            ViewBag.catlist = new SelectList(
-                _context.ExpenseCategory.ToList(),
-                "ExpenseCategoryID",
-                "CategoryName"
-            );
-        }
-
-        [HttpGet]
+//read
         public IActionResult Index()
         {
-            int? userId = HttpContext.Session.GetInt32("UserID");
-            if (userId == null)
-            {
-                return RedirectToAction("Signin", "Home");
-            }
+            var data = _context.Expenses
+                .Include(i => i.ExpenseCategory)
+                .ToList();
 
-           // LoadCategories();
-            //Expense e=new Expense();
-            //if(id!=null)
-            //{
-            //    e = _context.Expense.Find(id);
-            //}
-            //ViewBag.expenseList = _context.Expense
-            //    .Include(x => x.ExpenseCategory)
-            //    .Where(x => x.UserID == userId)
-            //    .ToList();
-            return View(); //e
+            return View(data);
         }
-
-        [HttpPost]
-        public IActionResult Index(Expense e)
+        //crete - get
+        public IActionResult Create()
         {
-            foreach (var item in ModelState)
-            {
-                foreach (var error in item.Value.Errors)
-                {
-                    Console.WriteLine($"{item.Key} : {error.ErrorMessage}");
-                }
-            }
-
+            LoadCategories();
+            return View();
+        }
+//crete -post
+        [HttpPost]
+        public IActionResult Create(Expense expense)
+        {
             int? userId = HttpContext.Session.GetInt32("UserID");
+
             if (userId == null)
-            {
                 return RedirectToAction("Signin", "Home");
-            }
-            e.UserID = userId.Value;
-            if (!ModelState.IsValid)
+
+            expense.UserID = userId.Value;
+
+            if (expense.ExpenseDate <= new DateTime(1753, 1, 1))
             {
-               // LoadCategories();
-               
-
-                //ViewBag.expenseList = _context.Expense
-                //   .Include(x => x.ExpenseCategory)
-                //   .Where(x => x.UserID == userId)
-                //   .ToList();
-                 return View(e);
-            }
-            //  if (e.ExpenseID == 0)
-            // {
-            //   _context.Expense.Add(e);
-            // }
-            // else
-            // {
-            // _context.Expense.Update(e);
-
-            // }
-            e.UserID = 1;
-            e.ExpenseCategoryID = 2;
-            e.ExpenseDate = DateTime.Today;
-
-           // if (e.ExpenseID == 0)
-           // {
-                _context.Expense.Add(e);   // INSERT
-           // }
-            //else
-            //{
-            //    _context.Expense.Update(e); // UPDATE
-            //}
-            Console.WriteLine("UserID: " + e.UserID);
-            Console.WriteLine("ExpenseDate: " + e.ExpenseDate);
-            Console.WriteLine("Amount: " + e.Amount);
-            Console.WriteLine("CategoryID: " + e.ExpenseCategoryID);
-
-            try
-            {
-                _context.SaveChanges();
-
-            }
-            catch (Exception ex)
-            {
-                return Content(ex.InnerException?.Message ?? ex.Message);
+                expense.ExpenseDate = DateTime.Now;
             }
 
+            _context.Expenses.Add(expense);
+            _context.SaveChanges();
 
             return RedirectToAction("Index");
         }
+        //edit-get
+        public IActionResult Edit(int id)
+        {
+            var expense = _context.Expenses.Find(id);
+            if (expense == null)
+                return NotFound();
+
+            ViewBag.CategoryList = new SelectList(
+                _context.ExpenseCategories,
+                "ExpenseCategoryID",
+                "CategoryName",
+                expense.ExpenseCategoryID
+            );
+
+            return View(expense);
+        }
+        //edit-post
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public IActionResult Edit(Expense expense)
+        {
+            int? userId = HttpContext.Session.GetInt32("UserID");
+
+            if (userId == null)
+                return RedirectToAction("Signin", "Home");
+
+            expense.UserID = userId.Value;
+            if (expense.ExpenseDate <= new DateTime(1753, 1, 1))
+            {
+                expense.ExpenseDate = DateTime.Now;
+            }
+
+            _context.Expenses.Update(expense);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+         //delete
         public IActionResult Delete(int id)
         {
-            var e = _context.Expense.Find(id);
-            if (e != null)
-            {
-                _context.Expense.Remove(e);
-                _context.SaveChanges();
-            }
-            return RedirectToAction("Index");
+            var expense = _context.Expenses.Find(id);
+            if (expense == null)
+                return NotFound();
+
+            _context.Expenses.Remove(expense);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Index));
         }
-    }
+        //comman method
+        private void LoadCategories(int? selectedId = null)
+        {
+            ViewBag.CategoryList = new SelectList(
+                _context.ExpenseCategories,
+                "ExpenseCategoryID",
+                "CategoryName",
+                selectedId
+            );
+        }
+    
+
+}
 }
