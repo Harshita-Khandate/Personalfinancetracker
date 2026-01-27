@@ -20,6 +20,13 @@ namespace PersonalFinanceTracker.Controllers
             var data = _context.Incomes
                 .Include(i => i.IncomeCategory)
                 .ToList();
+            int? userid=HttpContext.Session.GetInt32("UserID");
+
+            decimal totalIncome = _context.Incomes
+            .Where(i => i.UserID == userid)
+            .Select(i => (decimal?)i.Amount)
+           .Sum() ?? 0;
+            ViewBag.TotalIncome = totalIncome;
 
             return View(data);
         }

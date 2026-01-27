@@ -1,0 +1,25 @@
+﻿@model IEnumerable<PersonalFinanceTracker.Models.Goal>
+
+<h2>Goal List</h2>
+<a asp-action="Create" >Set Goal</a>
+<table class="table table-bordered mt-3">
+<tr>
+	<th>Goal Name</th>
+	<th>Amount</th>
+	<th>Deadline Date</th>
+	<th>Saved Amount</th>
+	<th>Action</th>
+</tr>
+@foreach(var item in Model)
+{
+	<tr>
+		<td>@item.GoalName</td>
+		<td>@item.TargetAmount</td>
+		<td>@item.Deadline</td>
+		<td>@item.SavedAmount</td>
+		<td>
+			<a asp-action="Delete" asp-controller="Goal" asp-route-id="@item.UserID" >Delete</a>
+		</td>
+	</tr>
+}
+</table>

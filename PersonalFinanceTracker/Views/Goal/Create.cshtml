@@ -1,0 +1,26 @@
+﻿@model PersonalFinanceTracker.Models.Goal;
+
+
+<form method="post" asp-action="Create" asp-controller="Goal">
+	<lable>Enter Goal Name</lable>
+	<input asp-for="GoalName"/>
+
+	<br />
+	<br />
+
+	<lable>Enter Target Amounte</lable>
+	<input asp-for="TargetAmount" />
+	<br />
+	<br />
+
+	<lable>Select Deadline Date</lable>
+	<input type="date" asp-for="Deadline"/>
+	<br />
+	<br />
+	<p>@ViewBag.mess</p>
+	<input type="submit" value="Save" />
+
+	
+
+
+</form>
